@@ -1,8 +1,9 @@
 """OpenRouter API client for making LLM requests."""
 
 import httpx
+import json
 from typing import List, Dict, Any, Optional
-from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL
+from .config import OPENROUTER_API_KEY, OPENROUTER_API_URL, REASONING_EFFORT
 
 
 async def query_model(
@@ -30,6 +31,8 @@ async def query_model(
         "model": model,
         "messages": messages,
     }
+    if REASONING_EFFORT:
+        payload["reasoning"] = {"effort": REASONING_EFFORT}
 
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
@@ -48,6 +51,18 @@ async def query_model(
                 'reasoning_details': message.get('reasoning_details')
             }
 
+    except httpx.HTTPStatusError as e:
+        response = e.response
+        body = response.text
+        try:
+            body = json.dumps(response.json())
+        except Exception:
+            pass
+        print(
+            f"Error querying model {model}: {e} "
+            f"response_body={body}"
+        )
+        return None
     except Exception as e:
         print(f"Error querying model {model}: {e}")
         return None

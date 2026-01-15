@@ -4,6 +4,24 @@
 
 const API_BASE = 'http://localhost:8001';
 
+const buildApiError = async (response, fallbackMessage) => {
+  const error = new Error(fallbackMessage);
+  error.status = response.status;
+  error.statusText = response.statusText;
+  error.url = response.url;
+
+  const text = await response.text();
+  if (text) {
+    try {
+      error.responseBody = JSON.parse(text);
+    } catch (parseError) {
+      error.responseText = text;
+    }
+  }
+
+  return error;
+};
+
 export const api = {
   /**
    * List all conversations.
@@ -11,7 +29,7 @@ export const api = {
   async listConversations() {
     const response = await fetch(`${API_BASE}/api/conversations`);
     if (!response.ok) {
-      throw new Error('Failed to list conversations');
+      throw await buildApiError(response, 'Failed to list conversations');
     }
     return response.json();
   },
@@ -28,7 +46,7 @@ export const api = {
       body: JSON.stringify({}),
     });
     if (!response.ok) {
-      throw new Error('Failed to create conversation');
+      throw await buildApiError(response, 'Failed to create conversation');
     }
     return response.json();
   },
@@ -41,7 +59,7 @@ export const api = {
       `${API_BASE}/api/conversations/${conversationId}`
     );
     if (!response.ok) {
-      throw new Error('Failed to get conversation');
+      throw await buildApiError(response, 'Failed to get conversation');
     }
     return response.json();
   },
@@ -61,7 +79,7 @@ export const api = {
       }
     );
     if (!response.ok) {
-      throw new Error('Failed to send message');
+      throw await buildApiError(response, 'Failed to send message');
     }
     return response.json();
   },
@@ -86,7 +104,7 @@ export const api = {
     );
 
     if (!response.ok) {
-      throw new Error('Failed to send message');
+      throw await buildApiError(response, 'Failed to send message');
     }
 
     const reader = response.body.getReader();

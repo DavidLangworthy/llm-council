@@ -21,5 +21,9 @@ CHAIRMAN_MODEL = "anthropic/claude-opus-4.5"
 # OpenRouter API endpoint
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
+# Reasoning effort hint for OpenRouter `reasoning.effort`.
+# Common values: "low", "medium", "high" (some models also mention "minimal").
+REASONING_EFFORT = "high"
+
 # Data directory for conversation storage
 DATA_DIR = "data/conversations"

@@ -4,6 +4,18 @@ import ChatInterface from './components/ChatInterface';
 import { api } from './api';
 import './App.css';
 
+const logApiError = (message, error) => {
+  if (error?.responseBody !== undefined) {
+    console.error(message, error, error.responseBody);
+    return;
+  }
+  if (error?.responseText) {
+    console.error(message, error, error.responseText);
+    return;
+  }
+  console.error(message, error);
+};
+
 function App() {
   const [conversations, setConversations] = useState([]);
   const [currentConversationId, setCurrentConversationId] = useState(null);
@@ -27,7 +39,7 @@ function App() {
       const convs = await api.listConversations();
       setConversations(convs);
     } catch (error) {
-      console.error('Failed to load conversations:', error);
+      logApiError('Failed to load conversations:', error);
     }
   };
 
@@ -36,7 +48,7 @@ function App() {
       const conv = await api.getConversation(id);
       setCurrentConversation(conv);
     } catch (error) {
-      console.error('Failed to load conversation:', error);
+      logApiError('Failed to load conversation:', error);
     }
   };
 
@@ -49,7 +61,7 @@ function App() {
       ]);
       setCurrentConversationId(newConv.id);
     } catch (error) {
-      console.error('Failed to create conversation:', error);
+      logApiError('Failed to create conversation:', error);
     }
   };
 
@@ -162,7 +174,7 @@ function App() {
             break;
 
           case 'error':
-            console.error('Stream error:', event.message);
+            console.error('Stream error:', event.message, event.body ?? event);
             setIsLoading(false);
             break;
 
@@ -171,7 +183,7 @@ function App() {
         }
       });
     } catch (error) {
-      console.error('Failed to send message:', error);
+      logApiError('Failed to send message:', error);
       // Remove optimistic messages on error
       setCurrentConversation((prev) => ({
         ...prev,
