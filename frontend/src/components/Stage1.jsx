@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import './Stage1.css';
 
 export default function Stage1({ responses }) {
@@ -28,7 +31,12 @@ export default function Stage1({ responses }) {
       <div className="tab-content">
         <div className="model-name">{responses[activeTab].model}</div>
         <div className="response-text markdown-content">
-          <ReactMarkdown>{responses[activeTab].response}</ReactMarkdown>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
+          >
+            {responses[activeTab].response}
+          </ReactMarkdown>
         </div>
       </div>
     </div>

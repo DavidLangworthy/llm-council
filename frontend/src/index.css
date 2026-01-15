@@ -1,3 +1,5 @@
+@import "katex/dist/katex.min.css";
+
 :root {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   line-height: 1.5;
@@ -95,4 +97,27 @@ body {
   padding-left: 16px;
   border-left: 4px solid #ddd;
   color: #666;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 12px 0;
+  font-size: 0.95em;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-content thead th {
+  background: #f0f0f0;
+}
+
+.markdown-content tbody tr:nth-child(even) {
+  background: #fafafa;
 }
